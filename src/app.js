@@ -1,3 +1,7 @@
+import dotenv from 'dotenv'
+dotenv.config()
+
+
 import express from 'express';
 import UserRouter from './routes/User.js';
 import TokenRouter from './routes/Tokens.js';
@@ -10,5 +14,5 @@ app.use(express.urlencoded({extended:false}))
 
 app.use('/', UserRouter)
 app.use('/', TokenRouter)
-
+app.get('/',(req,res)=>{res.send('Api TeflyClass')})
 export default app
