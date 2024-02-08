@@ -64,6 +64,16 @@ describe("Cadastro de usuário", () => {
       expect(response.body.err).toEqual("Usuario ja cadastrado");
     }catch(err){throw err}
   });
+  test("Deve impedir o cadastro de salas de aulas não existentes", async () => {
+    try{
+      let user = USER_TEST
+      user.classroom_id = Date.now()
+      const response = await request.post("/user").send(user);
+      
+      expect(response.status).toEqual(404);
+      expect(response.body.err).toEqual("Não existe está sala no banco de dados");
+    }catch(err){throw err}
+  });
 });
 
 describe("Authenticação", () => {

@@ -3,6 +3,8 @@ import User from "../models/User.js";
 import Validation from "../utils/Validation.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import Classroom from "../models/Classroom.js";
+import { ConflictData, NotExistValue } from "../utils/Error.js";
 
 class UserController {
   async Login(req, res) {
@@ -14,7 +16,6 @@ class UserController {
       if (!user) return res.status(404).json({ err: "Usuario não existe" });
       const resul = await bcrypt.compare(password, user.password);
       if (!resul) return res.status(400).json({ err: "Credenciais invalidas" });
-      console.log(JWTpassword)
       const token = jwt.sign({ role: user.role, email }, JWTpassword, {
         expiresIn: "72h",
       });
@@ -49,16 +50,16 @@ class UserController {
     const { name, email, password, school_id,  classroom_id} = req.body;
     try {
       await new Validation({ name, email, password, school_id, classroom_id }).Check();
+      const classroom = await Classroom.findById(classroom_id)
+      if(!classroom) throw new NotExistValue('Não existe está sala no banco de dados')
+      const User_Exist = await User.findOne({email})
+    if(User_Exist) throw new ConflictData('Usuario ja cadastrado')
       await User.create({ name, email, password, school_id,  classroom_id });
       const User_Created = await User.findOne({email})
       console.log(User_Created)
       res.status(200).json({ message: "Sucesso. Usuario cadastrado", user:User_Created });
     } catch (err) {
-      if (err.name == "NotValid")
-        return res.status(400).json({ err: err.message });
-      if (err.name == "ConflictData")
-        return res.status(409).json({ err: "Usuario ja cadastrado" });
-      console.log(err)
+      if(err.status) return res.status(err.status).json({err:err.message})
       res.sendStatus(500);
     }
   }
