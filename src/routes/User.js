@@ -1,8 +1,9 @@
-const express = require('express')
+import express from 'express';
+import User from '../controllers/UserController.js';
+import AuthAdmin from '../middlewares/AuthAdmin.js';
+import AuthUser from '../middlewares/AuthUser.js';
+
 const Router = express.Router()
-const User = require('../controllers/UserController')
-const AuthAdmin = require('../middlewares/AuthAdmin')
-const AuthUser = require('../middlewares/AuthUser')
 
 Router.get('/user',AuthAdmin, User.GetUsers)
 Router.post('/user', User.CreateUser)
@@ -14,4 +15,4 @@ Router.post('/login', User.Login)
 Router.post('/user/me',AuthUser, User.GetInfoUser)
 Router.post('/checkadmin',AuthAdmin, User.validate)
 
-module.exports = Router
+export default Router

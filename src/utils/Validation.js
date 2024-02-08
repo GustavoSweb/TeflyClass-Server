@@ -1,4 +1,5 @@
-const { NotValid } = require("./Error");
+import { NotValid } from "./Error.js"
+
 const names = {
   name: "Nome",
   email: "Email",
@@ -41,4 +42,4 @@ class Validation {
   }
 }
 
-module.exports = Validation;
+export default Validation

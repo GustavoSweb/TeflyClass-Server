@@ -1,9 +1,9 @@
-const PasswordToken = require("../models/PasswordToken");
-const User = require("../models/User");
-const Validation = require("../utils/Validation");
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
-const JWTpassword = "djgskdhfgfjdkfhgkdhfgjsdfnlgsndfjgnskdjfgkjdnf";
+import PasswordToken from "../models/PasswordToken.js";
+import User from "../models/User.js";
+import Validation from "../utils/Validation.js";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+const JWTpassword = process.env.JWT_SECRET;
 
 class UserController {
   async Login(req, res) {
@@ -122,4 +122,4 @@ class UserController {
   }
 }
 
-module.exports = new UserController();
+export default new UserController();

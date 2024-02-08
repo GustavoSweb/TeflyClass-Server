@@ -1,5 +1,5 @@
-const PasswordToken = require("../models/PasswordToken");
-const Validation = require("../utils/Validation");
+import PasswordToken from "../models/PasswordToken.js";
+
 class TokenController {
   async CreateToken(req, res) {
     try {
@@ -16,4 +16,4 @@ class TokenController {
   }
 }
 
-module.exports = new TokenController();
+export default new TokenController();

@@ -1,8 +1,7 @@
-const database = require("../database/connection");
-const User = require("./User");
-const { NotExistValue } = require("../utils/Error");
-const { v4: uuidv4 } = require("uuid");
-
+import database from '../database/connection.js'
+import User from './User.js'
+import { NotExistValue } from '../utils/Error.js';
+import {v4 as uuidv4} from 'uuid'
 class PasswordToken {
   async create({ email }) {
     try {
@@ -37,4 +36,4 @@ class PasswordToken {
     }
   }
 }
-module.exports = new PasswordToken();
+export default new PasswordToken();

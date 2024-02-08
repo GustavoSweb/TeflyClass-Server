@@ -1,7 +1,7 @@
-const database = require("../database/connection");
-const { NotValid, NotExistValue, ConflictData } = require("../utils/Error");
-const PasswordToken = require('../models/PasswordToken')
-const bcrypt = require("bcrypt");
+import database from "../database/connection.js";
+import { NotValid, NotExistValue, ConflictData } from "../utils/Error.js";
+import PasswordToken from '../models/PasswordToken.js';
+import bcrypt from "bcrypt";
 class User {
   async delete({ id }) {
     try {
@@ -104,4 +104,4 @@ class User {
   }
 }
 
-module.exports = new User();
+export default new User()

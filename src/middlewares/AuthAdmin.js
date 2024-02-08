@@ -1,7 +1,7 @@
-const jwt = require("jsonwebtoken");
-const JWTpassword = "djgskdhfgfjdkfhgkdhfgjsdfnlgsndfjgnskdjfgkjdnf";
+import jwt from "jsonwebtoken";
+const JWTpassword = process.env.JWT_SECRET;
 
-module.exports = async (req, res, next) => {
+export default async (req, res, next) => {
   const authToken = req.headers["authorization"];
   try {
     if (!authToken) return res.status(401).json({ err: "token invalido" });
