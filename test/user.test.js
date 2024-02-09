@@ -64,7 +64,7 @@ describe("Cadastro de usuário", () => {
       expect(response.body.err).toEqual("Usuario ja cadastrado");
     }catch(err){throw err}
   });
-  test("Deve impedir o cadastro de salas de aulas não existentes", async () => {
+  test("Deve impedir o cadastro de usuario pois não exite a sala de aula", async () => {
     try{
       let user = USER_TEST
       user.classroom_id = Date.now()

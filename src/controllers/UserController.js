@@ -4,7 +4,7 @@ import Validation from "../utils/Validation.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import Classroom from "../models/Classroom.js";
-import { ConflictData, NotExistValue } from "../utils/Error.js";
+import { ConflictData, NotExistValue, NotValid } from "../utils/Error.js";
 
 class UserController {
   async Login(req, res) {
@@ -29,12 +29,11 @@ class UserController {
   async DeleteUser(req, res) {
     const { id } = req.params;
     try {
+      if(!id) throw new NotValid('Parametros invalidos')
       await User.delete({ id });
       res.status(200).json({ message: "Usuario deletado" });
     } catch (err) {
-      console.log(err)
-      if (err.name == "NotExistValue")
-        return res.status(404).json({ err: err.message });
+      if(err.status) return res.status(err.status).json({err:err.message})
       res.sendStatus(500);
     }
   }
@@ -56,7 +55,6 @@ class UserController {
     if(User_Exist) throw new ConflictData('Usuario ja cadastrado')
       await User.create({ name, email, password, school_id,  classroom_id });
       const User_Created = await User.findOne({email})
-      console.log(User_Created)
       res.status(200).json({ message: "Sucesso. Usuario cadastrado", user:User_Created });
     } catch (err) {
       if(err.status) return res.status(err.status).json({err:err.message})
