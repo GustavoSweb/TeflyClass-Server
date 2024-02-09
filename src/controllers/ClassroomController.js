@@ -29,6 +29,14 @@ class ClassroomController {
       res.sendStatus(500);
     }
   }
+  async GetAll(req, res) {
+    try {
+      let data = await Classroom.findAll();
+      res.json(data);
+    } catch (err) {
+      res.sendStatus(500);
+    }
+  }
 }
 
 export default new ClassroomController();

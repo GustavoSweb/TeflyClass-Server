@@ -39,3 +39,12 @@ test('Deve deletar a sala com sucesso', async ()=>{
         throw err
     }
 })
+test('Deve retornar as salas de aula', async ()=>{
+    try{
+        const res = (await request.get(`/classroom`))
+        console.log(res.body)
+        expect(res.status).toEqual(200)
+    }catch(err){
+        throw err
+    }
+})

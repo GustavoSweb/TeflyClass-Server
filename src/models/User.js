@@ -72,8 +72,7 @@ class User {
         .table("users");
       return data;
     } catch (err) {
-      console.error(err);
-      return [];
+    throw err
     }
   }
   async create({ name, email, password, school_id,  classroom_id }) {

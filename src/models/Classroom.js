@@ -42,6 +42,16 @@ return sala
       throw err;
     }
   }
+  async findAll() {
+    try {
+      const data = await database
+        .select()
+        .table("classroom");
+      return data;
+    } catch (err) {
+      throw err
+    }
+  }
 }
 
 export default new Classroom();

@@ -18,7 +18,7 @@ afterAll(async () => {
   try {
     const user = await User.findOne({ email: USER_TEST.email });
     if (user) {
-      await request.delete(`/user/${user._id}`);
+      await request.delete(`/user/${user.id}`);
     }
   } catch (err) {
     throw err;
