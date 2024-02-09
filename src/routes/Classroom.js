@@ -6,6 +6,7 @@ import AuthUser from '../middlewares/AuthUser.js';
 const Router = express.Router()
 
 Router.get('/classroom', Classroom.GetAll)
+Router.get('/classroom/:id', Classroom.GetOne)
 
 Router.post('/classroom', Classroom.Create)
 Router.delete('/classroom/:id', Classroom.Delete)

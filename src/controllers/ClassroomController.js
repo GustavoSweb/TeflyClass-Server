@@ -37,6 +37,18 @@ class ClassroomController {
       res.sendStatus(500);
     }
   }
+  async GetOne(req, res) {
+    try {
+      const { id } = req.params;
+      if (isNaN(id)) throw new NotValid("Passe o id valido");
+      let data = await Classroom.findById(id);
+      if(!data) throw new NotExistValue('Não existe esta sala')
+      res.json(data);
+    } catch (err) {
+      if(err.status) return res.status(err.status).json({err:err.message})
+      res.sendStatus(500);
+    }
+  }
 }
 
 export default new ClassroomController();
