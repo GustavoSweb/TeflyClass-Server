@@ -59,9 +59,14 @@ class ActivitiesController {
   }
   async GetAll(req, res) {
     try {
-      let data = await Activities.findAll();
+      var {finished, matters} = req.query
+      if(matters) matters = JSON.parse(matters)
+      
+      
+      let data = await Activities.findAll({finished, matters, user_id:1});
       res.json(data);
     } catch (err) {
+      console.log(err)
       res.sendStatus(500);
     }
   }

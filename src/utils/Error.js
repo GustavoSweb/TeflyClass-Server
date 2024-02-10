@@ -1,4 +1,4 @@
-import statusCode from './httpStatusCode'
+import statusCode from './httpStatusCode.js'
 const {BAD_REQUEST, CONFLICT, NOT_FOUND} = statusCode
 
 class NotValid extends Error {

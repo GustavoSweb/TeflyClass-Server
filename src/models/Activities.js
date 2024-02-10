@@ -33,14 +33,16 @@ class Activities {
     matter_id,
   }) {
     try {
-      let sala = await database.insert({
-        title,
-        description,
-        delivery,
-        shipping,
-        bimester_id,
-        matter_id,
-      }).into("activities");
+      let sala = await database
+        .insert({
+          title,
+          description,
+          delivery,
+          shipping,
+          bimester_id,
+          matter_id,
+        })
+        .into("activities");
       return sala;
     } catch (err) {
       throw err;
@@ -55,10 +57,24 @@ class Activities {
       throw err;
     }
   }
-  async findAll() {
+  async findAll({ finished, matters,user_id }) {
     try {
-      const data = await database.select().table("activities");
-      return data;
+      let query = database
+      .select(["activities.*", "matter.name as name_matter"])
+      .table("matter")
+      .innerJoin("activities", "activities.matter_id", "matter.id");
+
+    if (matters) {
+      query = query.whereIn("matter_id", matters);
+    }
+
+    if (finished = 'true' && user_id) {
+      query = query
+        .innerJoin("activity_status", "activities.id", "activity_status.activity_id")
+        .where({"activity_status.user_id": user_id, "activity_status.status":1})
+    }
+
+    return await query;
     } catch (err) {
       throw err;
     }
