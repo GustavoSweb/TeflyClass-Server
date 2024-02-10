@@ -52,6 +52,15 @@ test("Deve retornar a atividade especificada", async () => {
     throw err;
   }
 });
+test("Deve atualizar a atividade com sucesso", async ()=>{
+  try{
+    const res = await request.put(`/activity/${activity.id}`).send({title:"Atividade de geografia"})
+    expect(res.status).toEqual(200)
+    expect(res.body.message).toEqual("Sucesso. Atividade atualizada!")
+  }catch(err){
+    throw err
+  }
+})
 test("Deve deletar a atividade com sucesso", async () => {
   try {
     const res = await request.delete(`/activity/${activity.id}`);

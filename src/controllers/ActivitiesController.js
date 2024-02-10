@@ -2,8 +2,7 @@ import PasswordToken from "../models/PasswordToken.js";
 import Validation from "../utils/Validation.js";
 import Activities from "../models/Activities.js";
 import { ConflictData, NotExistValue, NotValid } from "../utils/Error.js";
-import moment from 'moment'
-
+import moment from "moment";
 
 class ActivitiesController {
   async Create(req, res) {
@@ -18,8 +17,8 @@ class ActivitiesController {
         bimester_id,
         matter_id,
       }).Check();
-      delivery = moment(delivery).format('YYYY-MM-DD HH:mm:ss');
-      shipping = moment(shipping).format('YYYY-MM-DD HH:mm:ss');
+      delivery = moment(delivery).format("YYYY-MM-DD HH:mm:ss");
+      shipping = moment(shipping).format("YYYY-MM-DD HH:mm:ss");
       const activity_id = await Activities.create({
         title,
         description,
@@ -42,7 +41,7 @@ class ActivitiesController {
       });
     } catch (err) {
       if (err.status) return res.status(err.status).json({ err: err.message });
-      console.log(err)
+      console.log(err);
       res.sendStatus(500);
     }
   }
@@ -59,14 +58,13 @@ class ActivitiesController {
   }
   async GetAll(req, res) {
     try {
-      var {finished, matters} = req.query
-      if(matters) matters = JSON.parse(matters)
-      
-      
-      let data = await Activities.findAll({finished, matters, user_id:1});
+      var { finished, matters } = req.query;
+      if (matters) matters = JSON.parse(matters);
+
+      let data = await Activities.findAll({ finished, matters, user_id: 1 });
       res.json(data);
     } catch (err) {
-      console.log(err)
+      console.log(err);
       res.sendStatus(500);
     }
   }
@@ -78,6 +76,31 @@ class ActivitiesController {
       if (!data) throw new NotExistValue("Não existe esta atividade");
       res.json(data);
     } catch (err) {
+      if (err.status) return res.status(err.status).json({ err: err.message });
+      res.sendStatus(500);
+    }
+  }
+  async FinishedActivity(req, res) {
+    try {
+      const { id } = req.params;
+      if (isNaN(id)) throw new NotValid("Passe o id valido");
+      await Activities.finished({ id, user_id: 1 });
+      res.json({ message: "Foi atualizado o status da atividade!" });
+    } catch (err) {
+      if (err.status) return res.status(err.status).json({ err: err.message });
+      res.sendStatus(500);
+    }
+  }
+  async Update(req, res) {
+    try {
+      const { title, description, delivery, shipping, bimester_id, matter_id } =
+        req.body;
+        const {id} = req.params
+        if(isNaN(id)) throw new NotValid("Passe o id valido");
+      await Activities.update({ data: {title, description, delivery, shipping, bimester_id, matter_id}, id})
+      res.json({message:'Sucesso. Atividade atualizada!'})
+    } catch (err) {
+      console.log(err)
       if (err.status) return res.status(err.status).json({ err: err.message });
       res.sendStatus(500);
     }
