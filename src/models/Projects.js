@@ -1,14 +1,14 @@
 import database from "../database/connection.js";
 import { NotExistValue } from "../utils/Error.js";
 
-class Activities {
+class Project {
   async findOne(filter) {
     if (!filter) throw new Error("Falta de parametros no findOne");
     const key = Object.keys(filter);
     try {
       const data = await database
         .select()
-        .table("activities")
+        .table("projects")
         .where(`${key[0]}`, filter[key[0]]);
 
       return data[0];
@@ -19,31 +19,17 @@ class Activities {
   async findById(id) {
     if (!id) throw new Error("Falta de parametros no findById");
     try {
-      const data = await database.select().table("activities").where({ id });
+      const data = await database.select().table("projects").where({ id });
       return data[0];
     } catch (err) {
       throw err;
     }
   }
-  async create({
-    title,
-    description,
-    delivery,
-    shipping,
-    bimester_id,
-    matter_id,
-  }) {
+  async create(data) {
+    if (data.semester_id) delete data.bimester_id;
+    if (data.bimester_id) delete data.semester_id;
     try {
-      let sala = await database
-        .insert({
-          title,
-          description,
-          delivery,
-          shipping,
-          bimester_id,
-          matter_id,
-        })
-        .into("activities");
+      let sala = await database.insert(data).into("projects");
       return sala;
     } catch (err) {
       throw err;
@@ -51,22 +37,22 @@ class Activities {
   }
   async delete(id) {
     try {
-      const value = await database.where({ id }).delete().table("activities");
+      const value = await database.where({ id }).delete().table("projects");
       if (value == 0)
         throw new NotExistValue("A sala a ser deletada não existe");
     } catch (err) {
       throw err;
     }
   }
-   deleteCampEdit(data, activity){
-    Object.keys(data).forEach(key => {
-      if (!data[key] || data[key] == activity[key]) delete data[key]
-    })
-    return data
+  deleteCampEdit(data, activity) {
+    Object.keys(data).forEach((key) => {
+      if (!data[key] || data[key] == activity[key]) delete data[key];
+    });
+    return data;
   }
   async updateProcessEdit(data, activity) {
     try {
-      data = this.deleteCampEdit(data, activity)
+      data = this.deleteCampEdit(data, activity);
       if (Object.keys(data).length <= 0)
         throw new NotValid("Não houve nenhuma modificação");
       return data;
@@ -77,37 +63,45 @@ class Activities {
   async update({ data, id }) {
     try {
       const activity = await this.findById(id);
-      if (!activity) throw new NotExistValue("Atividade não encontradoa");
+      if (!activity) throw new NotExistValue("Projeto não encontradoa");
       const activityEdit = await this.updateProcessEdit(data, activity);
-      await database.update(activityEdit).where({ id }).table("activities");
+      await database.update(activityEdit).where({ id }).table("projects");
     } catch (err) {
       throw err;
     }
   }
-  async findAll({ finished, matters, user_id, bimester_id}) {
+  async findAllQueryDate(query, dataRelationObject) {
+    if (dataRelationObject["projects.semester_id"]) delete dataRelationObject.bimester_id;
+    if (dataRelationObject.bimester_id) delete dataRelationObject["projects.semester_id"];
+    return query.where(dataRelationObject);
+  }
+  async findAll({ finished, matters, user_id, semester_id, bimester_id }) {
     try {
       let query = database
-        .select(["activities.*", "matter.name as name_matter"])
+        .select(["projects.*", "matter.name as name_matter"])
         .table("matter")
-        .innerJoin("activities", "activities.matter_id", "matter.id");
+        .innerJoin("projects", "projects.matter_id", "matter.id");
+        console.log("ok")
 
       if (matters) {
+        console.log("ok")
         query = query.whereIn("matter_id", matters);
       }
-      if(bimester_id) query = query.where({bimester_id})
+
       if ((finished == "true" && user_id)) {
+
         query = query
           .innerJoin(
-            "activity_status",
-            "activities.id",
-            "activity_status.activity_id"
+            "project_status",
+            "projects.id",
+            "project_status.project_id"
           )
           .where({
-            "activity_status.user_id": user_id,
-            "activity_status.status": 1,
+            "project_status.user_id": user_id,
+            "project_status.status": 1,
           });
       }
-
+      if(semester_id || bimester_id) query = this.findAllQueryDate(query, { bimester_id, "projects.semester_id":semester_id }) 
       return await query;
     } catch (err) {
       throw err;
@@ -117,14 +111,14 @@ class Activities {
     try {
       const result = await database
         .select()
-        .table("activity_status")
+        .table("project_status")
         .where({ user_id, activity_id: id })
         .update({ status: 1 });
-      if (result[0] <= 0) throw new NotExistValue("Não existe esta atividade!");
+      if (result[0] <= 0) throw new NotExistValue("Não existe esta projeto!");
     } catch (err) {
       throw err;
     }
   }
 }
 
-export default new Activities();
+export default new Project();
