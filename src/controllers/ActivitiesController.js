@@ -91,6 +91,17 @@ class ActivitiesController {
       res.sendStatus(500);
     }
   }
+  async DeselectActivity(req, res) {
+    try {
+      const { id } = req.params;
+      if (isNaN(id)) throw new NotValid("Passe o id valido");
+      await Activities.deselect({ id, user_id: 1 });
+      res.json({ message: "Foi marcada a atividade como pendente!" });
+    } catch (err) {
+      if (err.status) return res.status(err.status).json({ err: err.message });
+      res.sendStatus(500);
+    }
+  }
   async Update(req, res) {
     try {
       const { title, description, delivery, shipping, bimester_id, matter_id } =

@@ -61,6 +61,22 @@ test("Deve atualizar a atividade com sucesso", async ()=>{
     throw err
   }
 })
+test("Deve marcar a atividade como finalizada", async ()=>{
+  try{
+    const res = await request.patch(`/activity/${activity.id}/finished`)
+    expect(res.status).toEqual(200)
+  }catch(err){
+    throw err
+  }
+})
+test("Deve desmarcar a atividade", async ()=>{
+  try{
+    const res = await request.patch(`/activity/${activity.id}/deselect`)
+    expect(res.status).toEqual(200)
+  }catch(err){
+    throw err
+  }
+})
 test("Deve deletar a atividade com sucesso", async () => {
   try {
     const res = await request.delete(`/activity/${activity.id}`);

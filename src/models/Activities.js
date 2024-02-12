@@ -125,6 +125,18 @@ class Activities {
       throw err;
     }
   }
+  async deselect({ id, user_id }) {
+    try {
+      const result = await database
+        .select()
+        .table("activity_status")
+        .where({ user_id, activity_id: id })
+        .update({ status: 0 });
+      if (result[0] <= 0) throw new NotExistValue("Não existe esta atividade!");
+    } catch (err) {
+      throw err;
+    }
+  }
 }
 
 export default new Activities();
