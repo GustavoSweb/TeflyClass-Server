@@ -41,7 +41,6 @@ class ActivitiesController {
       });
     } catch (err) {
       if (err.status) return res.status(err.status).json({ err: err.message });
-      console.log(err);
       res.sendStatus(500);
     }
   }

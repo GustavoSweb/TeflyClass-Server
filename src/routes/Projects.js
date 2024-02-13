@@ -9,6 +9,7 @@ Router.get('/project', Projects.GetAll)
 Router.get('/project/:id', Projects.GetOne)
 
 Router.patch('/project/:id/finished', Projects.FinishedProject)
+Router.patch('/project/:id/deselect', Projects.DeselectProject)
 Router.put('/project/:id', Projects.Update)
 
 Router.post('/project', Projects.Create)

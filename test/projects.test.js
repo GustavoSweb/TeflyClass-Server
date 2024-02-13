@@ -64,6 +64,22 @@ test("Deve atualizar o projeto com sucesso", async () => {
     throw err;
   }
 });
+test("Deve marcar o projeto como finalizado", async ()=>{
+  try{
+    const res = await request.patch(`/project/${project.id}/finished`)
+    expect(res.status).toEqual(200)
+  }catch(err){
+    throw err
+  }
+})
+test("Deve desmarcar o projeto", async ()=>{
+  try{
+    const res = await request.patch(`/project/${project.id}/deselect`)
+    expect(res.status).toEqual(200)
+  }catch(err){
+    throw err
+  }
+})
 test("Deve deletar o projeto com sucesso", async () => {
   try {
     const res = await request.delete(`/project/${project.id}`);
