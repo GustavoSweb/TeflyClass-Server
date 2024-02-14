@@ -7,11 +7,40 @@ class Project {
     const key = Object.keys(filter);
     try {
       const data = await database
-        .select()
+        .select([
+          "projects.*",
+          "archives_project.url",
+          "matter.name as matter_name",
+          "matter.important as matter_important",
+          "bimester.number as bimester",
+          "bimester.year as bimester_year",
+        ])
         .table("projects")
-        .where(`${key[0]}`, filter[key[0]]);
-
-      return data[0];
+        .where(`projects.${key[0]}`, filter[key[0]])
+        .innerJoin("matter", "matter.id", "projects.matter_id")
+        .innerJoin(
+          "archives_project",
+          "archives_project.project_id",
+          "projects.id"
+        )
+        .innerJoin("bimester", "bimester.id", "projects.bimester_id");
+      var defaultData = {
+        id: data[0].id,
+        description: data[0].description,
+        title: data[0].title,
+        delivery: data[0].delivery,
+        shipping: data[0].shipping,
+        matter_id: data[0].matter_id,
+        matter_name: data[0].matter_name,
+        matter_important: data[0].matter_important,
+        bimester_year: data[0].bimester_year,
+        bimester: data[0].bimester,
+        archives: [],
+      };
+      data.forEach((object) => {
+        defaultData.archives.push({ url: object.url });
+      });
+      return defaultData;
     } catch (err) {
       throw err;
     }
@@ -19,8 +48,43 @@ class Project {
   async findById(id) {
     if (!id) throw new Error("Falta de parametros no findById");
     try {
-      const data = await database.select().table("projects").where({ id });
-      return data[0];
+      console.log(id)
+      const data = await database
+      .select([
+        "projects.*",
+        "archives_project.url",
+        "matter.name as matter_name",
+        "matter.important as matter_important",
+        "bimester.number as bimester",
+        "bimester.year as bimester_year",
+      ])
+      .table("projects")
+      .where('projects.id', id)
+      .innerJoin("matter", "matter.id", "projects.matter_id")
+      .innerJoin(
+        "archives_project",
+        "archives_project.project_id",
+        "projects.id"
+      )
+      .innerJoin("bimester", "bimester.id", "projects.bimester_id");
+      if(!data[0]) throw new NotExistValue("Não existe o projeto")
+    var defaultData = {
+      id: data[0].id,
+      description: data[0].description,
+      title: data[0].title,
+      delivery: data[0].delivery,
+      shipping: data[0].shipping,
+      matter_id: data[0].matter_id,
+      matter_name: data[0].matter_name,
+      matter_important: data[0].matter_important,
+      bimester_year: data[0].bimester_year,
+      bimester: data[0].bimester,
+      archives: [],
+    };
+    data.forEach((object) => {
+      defaultData.archives.push({ url: object.url });
+    });
+    return defaultData;
     } catch (err) {
       throw err;
     }
@@ -71,8 +135,10 @@ class Project {
     }
   }
   async findAllQueryDate(query, dataRelationObject) {
-    if (dataRelationObject["projects.semester_id"]) delete dataRelationObject.bimester_id;
-    if (dataRelationObject.bimester_id) delete dataRelationObject["projects.semester_id"];
+    if (dataRelationObject["projects.semester_id"])
+      delete dataRelationObject.bimester_id;
+    if (dataRelationObject.bimester_id)
+      delete dataRelationObject["projects.semester_id"];
     return query.where(dataRelationObject);
   }
   async findAll({ finished, matters, user_id, semester_id, bimester_id }) {
@@ -81,15 +147,14 @@ class Project {
         .select(["projects.*", "matter.name as name_matter"])
         .table("matter")
         .innerJoin("projects", "projects.matter_id", "matter.id");
-        console.log("ok")
+      console.log("ok");
 
       if (matters) {
-        console.log("ok")
+        console.log("ok");
         query = query.whereIn("matter_id", matters);
       }
 
-      if ((finished == "true" && user_id)) {
-
+      if (finished == "true" && user_id) {
         query = query
           .innerJoin(
             "project_status",
@@ -101,7 +166,11 @@ class Project {
             "project_status.status": 1,
           });
       }
-      if(semester_id || bimester_id) query = this.findAllQueryDate(query, { bimester_id, "projects.semester_id":semester_id }) 
+      if (semester_id || bimester_id)
+        query = this.findAllQueryDate(query, {
+          bimester_id,
+          "projects.semester_id": semester_id,
+        });
       return await query;
     } catch (err) {
       throw err;

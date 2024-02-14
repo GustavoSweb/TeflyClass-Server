@@ -75,6 +75,7 @@ class ActivitiesController {
       if (!data) throw new NotExistValue("Não existe esta atividade");
       res.json(data);
     } catch (err) {
+      console.log(err)
       if (err.status) return res.status(err.status).json({ err: err.message });
       res.sendStatus(500);
     }

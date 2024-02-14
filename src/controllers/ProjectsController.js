@@ -92,6 +92,7 @@ semester_id = Number(semester_id)
       if (!data) throw new NotExistValue("Não existe este Projeto");
       res.json(data);
     } catch (err) {
+      console.log(err)
       if (err.status) return res.status(err.status).json({ err: err.message });
       res.sendStatus(500);
     }

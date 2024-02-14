@@ -7,11 +7,39 @@ class Activities {
     const key = Object.keys(filter);
     try {
       const data = await database
-        .select()
-        .table("activities")
-        .where(`${key[0]}`, filter[key[0]]);
-
-      return data[0];
+      .select([
+        "activities.*",
+        "archives_activity.url",
+        "matter.name as matter_name",
+        "matter.important as matter_important",
+        "bimester.number as bimester",
+        "bimester.year as bimester_year"
+      ])
+      .table("activities")
+      .where(`activities.${key[0]}`, filter[key[0]])
+      .innerJoin("matter", "matter.id", "activities.matter_id")
+      .innerJoin(
+        "archives_activity",
+        "archives_activity.activity_id",
+        "activities.id"
+      ).innerJoin('bimester', 'bimester.id', 'activities.bimester_id')
+      var defaultData = {
+        id: data[0].id,
+      description: data[0].description,
+      title: data[0].title,
+      delivery: data[0].delivery,
+      shipping: data[0].shipping,
+      matter_id: data[0].matter_id,
+      matter_name: data[0].matter_name,
+      matter_important: data[0].matter_important,
+      bimester_year:data[0].bimester_year,
+      bimester:data[0].bimester,
+      archives:[]
+      }
+      data.forEach(object=>{
+        defaultData.archives.push({url:object.url})
+      })
+    return defaultData;
     } catch (err) {
       throw err;
     }
@@ -19,8 +47,40 @@ class Activities {
   async findById(id) {
     if (!id) throw new Error("Falta de parametros no findById");
     try {
-      const data = await database.select().table("activities").where({ id });
-      return data[0];
+      const data = await database
+        .select([
+          "activities.*",
+          "archives_activity.url",
+          "matter.name as matter_name",
+          "matter.important as matter_important",
+          "bimester.number as bimester",
+          "bimester.year as bimester_year"
+        ])
+        .table("activities")
+        .where({ "activities.id": id })
+        .innerJoin("matter", "matter.id", "activities.matter_id")
+        .innerJoin(
+          "archives_activity",
+          "archives_activity.activity_id",
+          "activities.id"
+        ).innerJoin('bimester', 'bimester.id', 'activities.bimester_id')
+        var defaultData = {
+          id: data[0].id,
+        description: data[0].description,
+        title: data[0].title,
+        delivery: data[0].delivery,
+        shipping: data[0].shipping,
+        matter_id: data[0].matter_id,
+        matter_name: data[0].matter_name,
+        matter_important: data[0].matter_important,
+        bimester_year:data[0].bimester_year,
+        bimester:data[0].bimester,
+        archives:[]
+        }
+        data.forEach(object=>{
+          defaultData.archives.push({url:object.url})
+        })
+      return defaultData;
     } catch (err) {
       throw err;
     }
@@ -58,15 +118,15 @@ class Activities {
       throw err;
     }
   }
-   deleteCampEdit(data, activity){
-    Object.keys(data).forEach(key => {
-      if (!data[key] || data[key] == activity[key]) delete data[key]
-    })
-    return data
+  deleteCampEdit(data, activity) {
+    Object.keys(data).forEach((key) => {
+      if (!data[key] || data[key] == activity[key]) delete data[key];
+    });
+    return data;
   }
   async updateProcessEdit(data, activity) {
     try {
-      data = this.deleteCampEdit(data, activity)
+      data = this.deleteCampEdit(data, activity);
       if (Object.keys(data).length <= 0)
         throw new NotValid("Não houve nenhuma modificação");
       return data;
@@ -84,7 +144,7 @@ class Activities {
       throw err;
     }
   }
-  async findAll({ finished, matters, user_id, bimester_id}) {
+  async findAll({ finished, matters, user_id, bimester_id }) {
     try {
       let query = database
         .select(["activities.*", "matter.name as name_matter"])
@@ -94,8 +154,8 @@ class Activities {
       if (matters) {
         query = query.whereIn("matter_id", matters);
       }
-      if(bimester_id) query = query.where({bimester_id})
-      if ((finished == "true" && user_id)) {
+      if (bimester_id) query = query.where({ bimester_id });
+      if (finished == "true" && user_id) {
         query = query
           .innerJoin(
             "activity_status",
