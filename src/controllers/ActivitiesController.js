@@ -2,13 +2,13 @@ import PasswordToken from "../models/PasswordToken.js";
 import Validation from "../utils/Validation.js";
 import Activities from "../models/Activities.js";
 import { ConflictData, NotExistValue, NotValid } from "../utils/Error.js";
-import moment from "moment";
 
 class ActivitiesController {
   async Create(req, res) {
     try {
       var { title, description, delivery, shipping, bimester_id, matter_id } =
         req.body;
+        console.log({ title, description, delivery, shipping, bimester_id, matter_id })
       new Validation({
         title,
         description,
@@ -17,8 +17,9 @@ class ActivitiesController {
         bimester_id,
         matter_id,
       }).Check();
-      delivery = moment(delivery).format("YYYY-MM-DD HH:mm:ss");
-      shipping = moment(shipping).format("YYYY-MM-DD HH:mm:ss");
+      delivery = new Date(delivery).toISOString().slice(0, 19)
+      shipping = new Date(shipping).toISOString().slice(0, 19)
+      console.log(delivery)
       const activity_id = await Activities.create({
         title,
         description,

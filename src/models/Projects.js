@@ -24,6 +24,7 @@ class Project {
           "projects.id"
         )
         .innerJoin("bimester", "bimester.id", "projects.bimester_id");
+      if (!data[0]) throw new NotExistValue("Não existe o projeto");
       var defaultData = {
         id: data[0].id,
         description: data[0].description,
@@ -34,6 +35,8 @@ class Project {
         matter_name: data[0].matter_name,
         matter_important: data[0].matter_important,
         bimester_year: data[0].bimester_year,
+        min_members: data[0].min_members,
+        max_members: data[0].max_members,
         bimester: data[0].bimester,
         archives: [],
       };
@@ -48,43 +51,45 @@ class Project {
   async findById(id) {
     if (!id) throw new Error("Falta de parametros no findById");
     try {
-      console.log(id)
+      console.log(id);
       const data = await database
-      .select([
-        "projects.*",
-        "archives_project.url",
-        "matter.name as matter_name",
-        "matter.important as matter_important",
-        "bimester.number as bimester",
-        "bimester.year as bimester_year",
-      ])
-      .table("projects")
-      .where('projects.id', id)
-      .innerJoin("matter", "matter.id", "projects.matter_id")
-      .innerJoin(
-        "archives_project",
-        "archives_project.project_id",
-        "projects.id"
-      )
-      .innerJoin("bimester", "bimester.id", "projects.bimester_id");
-      if(!data[0]) throw new NotExistValue("Não existe o projeto")
-    var defaultData = {
-      id: data[0].id,
-      description: data[0].description,
-      title: data[0].title,
-      delivery: data[0].delivery,
-      shipping: data[0].shipping,
-      matter_id: data[0].matter_id,
-      matter_name: data[0].matter_name,
-      matter_important: data[0].matter_important,
-      bimester_year: data[0].bimester_year,
-      bimester: data[0].bimester,
-      archives: [],
-    };
-    data.forEach((object) => {
-      defaultData.archives.push({ url: object.url });
-    });
-    return defaultData;
+        .select([
+          "projects.*",
+          "archives_project.url",
+          "matter.name as matter_name",
+          "matter.important as matter_important",
+          "bimester.number as bimester",
+          "bimester.year as bimester_year",
+        ])
+        .table("projects")
+        .where("projects.id", id)
+        .innerJoin("matter", "matter.id", "projects.matter_id")
+        .innerJoin(
+          "archives_project",
+          "archives_project.project_id",
+          "projects.id"
+        )
+        .innerJoin("bimester", "bimester.id", "projects.bimester_id");
+      if (!data[0]) throw new NotExistValue("Não existe o projeto");
+      var defaultData = {
+        id: data[0].id,
+        description: data[0].description,
+        title: data[0].title,
+        delivery: data[0].delivery,
+        shipping: data[0].shipping,
+        matter_id: data[0].matter_id,
+        matter_name: data[0].matter_name,
+        matter_important: data[0].matter_important,
+        bimester_year: data[0].bimester_year,
+        bimester: data[0].bimester,
+        min_members: data[0].min_members,
+        max_members: data[0].max_members,
+        archives: [],
+      };
+      data.forEach((object) => {
+        defaultData.archives.push({ url: object.url });
+      });
+      return defaultData;
     } catch (err) {
       throw err;
     }

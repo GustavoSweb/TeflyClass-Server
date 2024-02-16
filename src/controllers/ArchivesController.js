@@ -14,6 +14,7 @@ class ArchivesController {
         await Archives.upload(File, type, idRelation)
         res.json({message:"Upload feito com sucesso"})
     } catch (err) {
+      console.log(err)
       if (err.status) return res.status(err.status).json({ err: err.message });
       res.sendStatus(500);
     }

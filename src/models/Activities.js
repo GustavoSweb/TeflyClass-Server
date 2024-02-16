@@ -23,6 +23,7 @@ class Activities {
         "archives_activity.activity_id",
         "activities.id"
       ).innerJoin('bimester', 'bimester.id', 'activities.bimester_id')
+      if (!data[0]) throw new NotExistValue("Não existe está atividade");
       var defaultData = {
         id: data[0].id,
       description: data[0].description,
@@ -64,6 +65,7 @@ class Activities {
           "archives_activity.activity_id",
           "activities.id"
         ).innerJoin('bimester', 'bimester.id', 'activities.bimester_id')
+        if (!data[0]) throw new NotExistValue("Não existe está atividade");
         var defaultData = {
           id: data[0].id,
         description: data[0].description,
