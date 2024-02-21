@@ -1,5 +1,5 @@
 import express from 'express';
-import Matter from '../controllers/MatterController.js';
+import Matter from '../controllers/Matter/Controller.js';
 import AuthAdmin from '../middlewares/AuthAdmin.js';
 import AuthUser from '../middlewares/AuthUser.js';
 

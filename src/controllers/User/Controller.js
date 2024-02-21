@@ -1,10 +1,10 @@
-import PasswordToken from "../models/PasswordToken.js";
-import User from "../models/User.js";
-import Validation from "../utils/Validation.js";
+import PasswordToken from "../../models/PasswordToken.js";
+import User from "../../models/User.js";
+import Validation from "../../utils/Validation.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import Classroom from "../models/Classroom.js";
-import { ConflictData, NotExistValue, NotValid } from "../utils/Error.js";
+import Classroom from "../../models/Classroom.js";
+import { ConflictData, NotExistValue, NotValid } from "../../utils/Error.js";
 
 class UserController {
   async Login(req, res) {

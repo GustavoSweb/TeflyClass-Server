@@ -1,7 +1,7 @@
-import PasswordToken from "../models/PasswordToken.js";
-import Validation from "../utils/Validation.js";
-import { ConflictData, NotExistValue, NotValid } from "../utils/Error.js";
-import Archives from "../models/Archives.js";
+import PasswordToken from "../../models/PasswordToken.js";
+import Validation from "../../utils/Validation.js";
+import { ConflictData, NotExistValue, NotValid } from "../../utils/Error.js";
+import Archives from "../../models/Archives.js";
 
 class ArchivesController {
   async Create(req, res) {

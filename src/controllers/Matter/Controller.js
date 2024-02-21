@@ -1,7 +1,7 @@
-import PasswordToken from "../models/PasswordToken.js";
-import Validation from "../utils/Validation.js";
-import Matter from "../models/Matter.js";
-import { ConflictData, NotExistValue, NotValid } from "../utils/Error.js";
+import PasswordToken from "../../models/PasswordToken.js";
+import Validation from "../../utils/Validation.js";
+import Matter from "../../models/Matter.js";
+import { ConflictData, NotExistValue, NotValid } from "../../utils/Error.js";
 
 class MatterController {
   async Create(req, res) {

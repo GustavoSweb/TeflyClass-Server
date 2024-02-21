@@ -1,5 +1,5 @@
 import express from 'express';
-import Projects from '../controllers/ProjectsController.js';
+import Projects from '../controllers/FormsOfEvaluation/Projects/Controller.js';
 import AuthAdmin from '../middlewares/AuthAdmin.js';
 import AuthUser from '../middlewares/AuthUser.js';
 

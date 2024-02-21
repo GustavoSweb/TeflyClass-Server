@@ -1,5 +1,5 @@
 import express from 'express';
-import Activities from '../controllers/ActivitiesController.js';
+import Activities from '../controllers/FormsOfEvaluation/Activities/Controller.js';
 import AuthAdmin from '../middlewares/AuthAdmin.js';
 import AuthUser from '../middlewares/AuthUser.js';
 

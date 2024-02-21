@@ -1,4 +1,4 @@
-import Token from '../controllers/TokenController.js'
+import Token from '../controllers/User/TokenController.js'
 import express from 'express'
 const Router = express.Router()
 

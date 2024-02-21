@@ -1,4 +1,4 @@
-import PasswordToken from "../models/PasswordToken.js";
+import PasswordToken from "../../models/PasswordToken.js";
 
 class TokenController {
   async CreateToken(req, res) {

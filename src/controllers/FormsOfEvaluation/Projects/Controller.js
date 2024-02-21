@@ -1,6 +1,6 @@
-import Validation from "../utils/Validation.js";
-import Projects from "../models/Projects.js";
-import { ConflictData, NotExistValue, NotValid } from "../utils/Error.js";
+import Validation from "../../../utils/Validation.js";
+import Projects from "../../../models/Projects.js";
+import { ConflictData, NotExistValue, NotValid } from "../../../utils/Error.js";
 import moment from "moment";
 
 class ProjectsController {

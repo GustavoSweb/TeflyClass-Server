@@ -1,7 +1,7 @@
-import PasswordToken from "../models/PasswordToken.js";
-import Validation from "../utils/Validation.js";
-import Activities from "../models/Activities.js";
-import { ConflictData, NotExistValue, NotValid } from "../utils/Error.js";
+import PasswordToken from "../../../models/PasswordToken.js";
+import Validation from "../../../utils/Validation.js";
+import Activities from "../../../models/Activities.js";
+import { ConflictData, NotExistValue, NotValid } from "../../../utils/Error.js";
 
 class ActivitiesController {
   async Create(req, res) {

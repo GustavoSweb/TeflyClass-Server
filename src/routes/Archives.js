@@ -1,5 +1,5 @@
 import express from 'express';
-import Archives from '../controllers/ArchivesController.js';
+import Archives from '../controllers/Archives/Controller.js';
 import AuthAdmin from '../middlewares/AuthAdmin.js';
 import AuthUser from '../middlewares/AuthUser.js';
 import multer from "multer";

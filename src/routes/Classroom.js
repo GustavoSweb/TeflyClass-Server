@@ -1,5 +1,5 @@
 import express from 'express';
-import Classroom from '../controllers/ClassroomController.js';
+import Classroom from '../controllers/Classroom/Controller.js';
 import AuthAdmin from '../middlewares/AuthAdmin.js';
 import AuthUser from '../middlewares/AuthUser.js';
 
