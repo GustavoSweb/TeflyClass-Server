@@ -7,40 +7,41 @@ class Activities {
     const key = Object.keys(filter);
     try {
       const data = await database
-      .select([
-        "activities.*",
-        "archives_activity.url",
-        "matter.name as matter_name",
-        "matter.important as matter_important",
-        "bimester.number as bimester",
-        "bimester.year as bimester_year"
-      ])
-      .table("activities")
-      .where(`activities.${key[0]}`, filter[key[0]])
-      .innerJoin("matter", "matter.id", "activities.matter_id")
-      .innerJoin(
-        "archives_activity",
-        "archives_activity.activity_id",
-        "activities.id"
-      ).innerJoin('bimester', 'bimester.id', 'activities.bimester_id')
+        .select([
+          "activities.*",
+          "archives_activity.url",
+          "matter.name as matter_name",
+          "matter.important as matter_important",
+          "bimester.number as bimester",
+          "bimester.year as bimester_year",
+        ])
+        .table("activities")
+        .where(`activities.${key[0]}`, filter[key[0]])
+        .innerJoin("matter", "matter.id", "activities.matter_id")
+        .innerJoin(
+          "archives_activity",
+          "archives_activity.activity_id",
+          "activities.id"
+        )
+        .innerJoin("bimester", "bimester.id", "activities.bimester_id");
       if (!data[0]) throw new NotExistValue("Não existe está atividade");
       var defaultData = {
         id: data[0].id,
-      description: data[0].description,
-      title: data[0].title,
-      delivery: data[0].delivery,
-      shipping: data[0].shipping,
-      matter_id: data[0].matter_id,
-      matter_name: data[0].matter_name,
-      matter_important: data[0].matter_important,
-      bimester_year:data[0].bimester_year,
-      bimester:data[0].bimester,
-      archives:[]
-      }
-      data.forEach(object=>{
-        defaultData.archives.push({url:object.url})
-      })
-    return defaultData;
+        description: data[0].description,
+        title: data[0].title,
+        delivery: data[0].delivery,
+        shipping: data[0].shipping,
+        matter_id: data[0].matter_id,
+        matter_name: data[0].matter_name,
+        matter_important: data[0].matter_important,
+        bimester_year: data[0].bimester_year,
+        bimester: data[0].bimester,
+        archives: [],
+      };
+      data.forEach((object) => {
+        defaultData.archives.push({ url: object.url });
+      });
+      return defaultData;
     } catch (err) {
       throw err;
     }
@@ -55,7 +56,7 @@ class Activities {
           "matter.name as matter_name",
           "matter.important as matter_important",
           "bimester.number as bimester",
-          "bimester.year as bimester_year"
+          "bimester.year as bimester_year",
         ])
         .table("activities")
         .where({ "activities.id": id })
@@ -64,10 +65,11 @@ class Activities {
           "archives_activity",
           "archives_activity.activity_id",
           "activities.id"
-        ).innerJoin('bimester', 'bimester.id', 'activities.bimester_id')
-        if (!data[0]) throw new NotExistValue("Não existe está atividade");
-        var defaultData = {
-          id: data[0].id,
+        )
+        .innerJoin("bimester", "bimester.id", "activities.bimester_id");
+      if (!data[0]) throw new NotExistValue("Não existe está atividade");
+      var defaultData = {
+        id: data[0].id,
         description: data[0].description,
         title: data[0].title,
         delivery: data[0].delivery,
@@ -75,13 +77,13 @@ class Activities {
         matter_id: data[0].matter_id,
         matter_name: data[0].matter_name,
         matter_important: data[0].matter_important,
-        bimester_year:data[0].bimester_year,
-        bimester:data[0].bimester,
-        archives:[]
-        }
-        data.forEach(object=>{
-          defaultData.archives.push({url:object.url})
-        })
+        bimester_year: data[0].bimester_year,
+        bimester: data[0].bimester,
+        archives: [],
+      };
+      data.forEach((object) => {
+        defaultData.archives.push({ url: object.url });
+      });
       return defaultData;
     } catch (err) {
       throw err;
@@ -94,19 +96,25 @@ class Activities {
     shipping,
     bimester_id,
     matter_id,
+    classrooms,
   }) {
     try {
-      let sala = await database
-        .insert({
-          title,
-          description,
-          delivery,
-          shipping,
-          bimester_id,
-          matter_id,
-        })
-        .into("activities");
-      return sala;
+      return await database.transaction(async () => {
+        let activity_id = await database
+          .insert({
+            title,
+            description,
+            delivery,
+            shipping,
+            bimester_id,
+            matter_id,
+          })
+          .into("activities");
+        classrooms.forEach(async (classroom_id) => {
+          await database.insert({ activity_id, classroom_id }).into('classroom_activities')
+        });
+        return activity_id;
+      });
     } catch (err) {
       throw err;
     }

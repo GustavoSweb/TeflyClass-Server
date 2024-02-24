@@ -32,6 +32,7 @@ class MatterController {
   async GetAll(req, res) {
     try {
       let data = await Matter.findAll();
+      console.log(data)
       res.json(data);
     } catch (err) {
       res.sendStatus(500);

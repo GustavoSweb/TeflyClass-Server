@@ -6,9 +6,8 @@ import { ConflictData, NotExistValue, NotValid } from "../../../utils/Error.js";
 class ActivitiesController {
   async Create(req, res) {
     try {
-      var { title, description, delivery, shipping, bimester_id, matter_id } =
+      var { title, description, delivery, shipping, bimester_id, matter_id, classrooms } =
         req.body;
-        console.log({ title, description, delivery, shipping, bimester_id, matter_id })
       new Validation({
         title,
         description,
@@ -16,6 +15,7 @@ class ActivitiesController {
         shipping,
         bimester_id,
         matter_id,
+        classrooms,
       }).Check();
       delivery = new Date(delivery).toISOString().slice(0, 19)
       shipping = new Date(shipping).toISOString().slice(0, 19)
@@ -27,7 +27,20 @@ class ActivitiesController {
         shipping,
         bimester_id,
         matter_id,
+        classrooms
       });
+      console.log({
+        message: "Sucesso. Atividade cadastrada",
+        activity: {
+          id: activity_id,
+          title,
+          description,
+          delivery,
+          shipping,
+          bimester_id,
+          matter_id,
+        },
+      })
       return res.json({
         message: "Sucesso. Atividade cadastrada",
         activity: {
