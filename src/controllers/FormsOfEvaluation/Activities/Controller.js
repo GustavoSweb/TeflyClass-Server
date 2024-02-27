@@ -29,22 +29,11 @@ class ActivitiesController {
         matter_id,
         classrooms
       });
-      console.log({
-        message: "Sucesso. Atividade cadastrada",
-        activity: {
-          id: activity_id,
-          title,
-          description,
-          delivery,
-          shipping,
-          bimester_id,
-          matter_id,
-        },
-      })
+      
       return res.json({
         message: "Sucesso. Atividade cadastrada",
         activity: {
-          id: activity_id,
+          id: activity_id[0],
           title,
           description,
           delivery,
@@ -84,12 +73,12 @@ class ActivitiesController {
   async GetOne(req, res) {
     try {
       const { id } = req.params;
+      console.log(id)
       if (isNaN(id)) throw new NotValid("Passe o id valido");
       let data = await Activities.findById(id);
       if (!data) throw new NotExistValue("Não existe esta atividade");
       res.json(data);
     } catch (err) {
-      console.log(err)
       if (err.status) return res.status(err.status).json({ err: err.message });
       res.sendStatus(500);
     }

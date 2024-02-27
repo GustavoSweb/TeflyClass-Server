@@ -1,5 +1,7 @@
 import database from "../database/connection.js";
 import { NotExistValue } from "../utils/Error.js";
+import ActivityModel from "../Schemas/activities.js";
+import slugify from "slugify";
 
 class Activities {
   async findOne(filter) {
@@ -99,25 +101,36 @@ class Activities {
     classrooms,
   }) {
     try {
+
       return await database.transaction(async () => {
         let activity_id = await database
-          .insert({
-            title,
-            description,
-            delivery,
-            shipping,
-            bimester_id,
-            matter_id,
-          })
-          .into("activities");
+        .insert({
+          title,
+          description,
+          delivery,
+          shipping,
+          bimester_id,
+          matter_id,
+        })
+        .into("activities");
+        const TAGS = this.CreateTags({title, description})
+        await ActivityModel.create({activity_id:activity_id[0], tags:TAGS})
         classrooms.forEach(async (classroom_id) => {
-          await database.insert({ activity_id, classroom_id }).into('classroom_activities')
+          await database.insert({ activity_id:activity_id[0], classroom_id }).into('classroom_activities')
         });
         return activity_id;
       });
     } catch (err) {
       throw err;
     }
+  }
+   CreateTags({title, description}){
+    var DATA_TAGS = []
+    const DESCRIPTION_UPPER_FORMAT = (slugify(description).toUpperCase()).split('-')
+    const TITLE_UPPER_FORMAT = (slugify(title).toUpperCase()).split('-')
+    
+    DATA_TAGS.push( ...DESCRIPTION_UPPER_FORMAT, ...TITLE_UPPER_FORMAT)
+    return DATA_TAGS
   }
   async delete(id) {
     try {

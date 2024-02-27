@@ -11,6 +11,7 @@ const activity = {
   shipping: new Date(),
   bimester_id: 1,
   matter_id: 1,
+  classrooms:[3]
 };
 
 describe("Cadastro de atividades", () => {

@@ -1,6 +1,8 @@
 import dotenv from "dotenv";
 dotenv.config();
 
+import mongoose from "mongoose";
+
 import express from "express";
 const app = express();
 
@@ -11,6 +13,7 @@ import MatterRouter from "./routes/Matter.js";
 import ActivitiesRouter from "./routes/Activities.js";
 import ProjectsRouter from "./routes/Projects.js";
 import ArchivesRouter from "./routes/Archives.js";
+
 
 import cors from "cors";
 app.use(cors());
@@ -25,6 +28,14 @@ app.use("/", ClassroomRouter);
 app.use("/", MatterRouter);
 app.use("/", TokenRouter);
 app.use("/", ArchivesRouter);
+
+(async main => {
+  try{
+    await mongoose.connect(process.env.MONGODB_URL)
+  }catch(err){
+    console.error(err)
+  }
+})()
 
 app.get("/", (req, res) => {
   res.send("Api TeflyClass");
