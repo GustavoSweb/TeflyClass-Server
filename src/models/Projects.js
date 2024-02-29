@@ -51,7 +51,6 @@ class Project {
   async findById(id) {
     if (!id) throw new Error("Falta de parametros no findById");
     try {
-      console.log(id);
       const data = await database
         .select([
           "projects.*",
@@ -152,7 +151,6 @@ class Project {
         .select(["projects.*", "matter.name as name_matter"])
         .table("matter")
         .innerJoin("projects", "projects.matter_id", "matter.id");
-      console.log("ok");
 
       if (matters) {
         console.log("ok");

@@ -19,7 +19,6 @@ class ActivitiesController {
       }).Check();
       delivery = new Date(delivery).toISOString().slice(0, 19)
       shipping = new Date(shipping).toISOString().slice(0, 19)
-      console.log(delivery)
       const activity_id = await Activities.create({
         title,
         description,
@@ -73,9 +72,8 @@ class ActivitiesController {
   async GetOne(req, res) {
     try {
       const { id } = req.params;
-      console.log(id)
       if (isNaN(id)) throw new NotValid("Passe o id valido");
-      let data = await Activities.findById(id);
+      let data = await Activities.findOne({id});
       if (!data) throw new NotExistValue("Não existe esta atividade");
       res.json(data);
     } catch (err) {

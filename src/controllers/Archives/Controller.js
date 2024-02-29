@@ -9,12 +9,10 @@ class ArchivesController {
         const File = req.file
         const {type, idRelation} = req.body
         if(!File) throw new NotValid("Não foi passado o arquivo")
-        console.log(type)
         new Validation({type}).Check()
-        await Archives.upload(File, type, idRelation)
+        await Archives.upload(File, type, parseInt(idRelation))
         res.json({message:"Upload feito com sucesso"})
     } catch (err) {
-      console.log(err)
       if (err.status) return res.status(err.status).json({ err: err.message });
       res.sendStatus(500);
     }

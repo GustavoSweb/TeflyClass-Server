@@ -1,7 +1,8 @@
 import supertest from "supertest";
 import app from "../src/app";
 
-
+import fs from 'fs'
+''
 const request = supertest(app);
 
 const activity = {
@@ -13,11 +14,14 @@ const activity = {
   matter_id: 1,
   classrooms:[3]
 };
-
+afterAll(async ()=>{
+  const res = await request.delete(`/activity/${activity.id}`);
+})
 describe("Cadastro de atividades", () => {
   test("Deve cadastrar a atividade com sucesso", async () => {
     try {
       const res = await request.post("/activity").send(activity);
+
       expect(res.status).toEqual(200);
       expect(res.body.message).toEqual("Sucesso. Atividade cadastrada");
       expect(res.body.activity).toBeDefined();
@@ -37,17 +41,38 @@ describe("Cadastro de atividades", () => {
     }
   });
 });
-test("Deve retornar as atividades", async () => {
+describe("Cadastro de arquivos", () => {
+  test("Deve fazer upload com sucesso", async () => {
+    try {
+      const res = await request.post("/archive").attach('file', 'test/archives/Ola-Mundo.txt').field('type','activity').field('idRelation', activity.id)
+      
+      expect(res.status).toEqual(200);
+      expect(res.body.message).toEqual("Upload feito com sucesso");
+    } catch (err) {
+      throw err;
+    }
+  });
+  test("Deve impedir o upload de uma atividade com valores vazios", async () => {
+    try {
+      const res = await request.post("/archive");
+      expect(res.status).toEqual(400);
+    } catch (err) {
+      throw err;
+    }
+  });
+});
+
+test("Deve retornar a atividade especificada", async () => {
   try {
-    const res = await request.get(`/activity`);
+    const res = await request.get(`/activity/${activity.id}`);
     expect(res.status).toEqual(200);
   } catch (err) {
     throw err;
   }
 });
-test("Deve retornar a atividade especificada", async () => {
+test("Deve retornar as atividades", async () => {
   try {
-    const res = await request.get(`/activity/${activity.id}`);
+    const res = await request.get(`/activity`);
     expect(res.status).toEqual(200);
   } catch (err) {
     throw err;
@@ -78,11 +103,3 @@ test("Deve desmarcar a atividade", async ()=>{
     throw err
   }
 })
-test("Deve deletar a atividade com sucesso", async () => {
-  try {
-    const res = await request.delete(`/activity/${activity.id}`);
-    expect(res.status).toEqual(200);
-  } catch (err) {
-    throw err;
-  }
-});

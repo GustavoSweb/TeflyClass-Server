@@ -1,6 +1,6 @@
 import supertest from "supertest";
 import app from "../src/app";
-
+import fs from 'fs'
 const request = supertest(app);
 
 const project = {
@@ -13,7 +13,9 @@ const project = {
   min_members: 2,
   max_members: 4,
 };
-
+afterAll(async ()=>{
+  await request.delete(`/project/${project.id}`);
+})
 describe("Cadastro de atividades", () => {
   test("Deve cadastrar o projeto com sucesso", async () => {
     try {
@@ -36,6 +38,15 @@ describe("Cadastro de atividades", () => {
       throw err;
     }
   });
+});
+test("Deve fazer upload com sucesso", async () => {
+  try {
+    const res = await request.post("/archive").attach('file', 'test/archives/Ola-Mundo.txt').field('type','project').field('idRelation', project.id)
+    expect(res.status).toEqual(200);
+    expect(res.body.message).toEqual("Upload feito com sucesso");
+  } catch (err) {
+    throw err;
+  }
 });
 test("Deve retornar os projetos", async () => {
   try {
@@ -80,11 +91,3 @@ test("Deve desmarcar o projeto", async ()=>{
     throw err
   }
 })
-test("Deve deletar o projeto com sucesso", async () => {
-  try {
-    const res = await request.delete(`/project/${project.id}`);
-    expect(res.status).toEqual(200);
-  } catch (err) {
-    throw err;
-  }
-});

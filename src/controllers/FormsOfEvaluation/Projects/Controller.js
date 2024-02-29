@@ -77,7 +77,6 @@ class ProjectsController {
       if (matters) matters = JSON.parse(matters);
 semester_id = Number(semester_id)
       let data = await Projects.findAll({ finished, matters, user_id: 1, semester_id, bimester_id });
-      console.log(data)
       res.json(data);
     } catch (err) {
       console.log(err);

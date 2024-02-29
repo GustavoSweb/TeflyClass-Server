@@ -26,15 +26,17 @@ class Archives{
         const fileStorage = storage.file(dest);
         const fileStream = fileStorage.createWriteStream();
         const url = `https://storage.googleapis.com/${storage.name}/${dest}`
-
+        let data = {url:''}
+        data[`${type}_id`] = idRelation
+          
+            const id = await database.insert(data).into(`archives_${type}`)
         fileStream.on("error", (err)=>{throw err});
         fileStream.on("finish",async () => {
           try{
             fileStorage.makePublic();
             let data = {url}
-            data[`${type}_id`] = idRelation
           
-            await database.insert(data).into(`archives_${type}`)
+            await database.table(`archives_${type}`).select().where({id:id[0]}).update(data)
           }catch(err){
             throw err
           }
