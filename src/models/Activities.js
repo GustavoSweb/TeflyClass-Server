@@ -4,6 +4,18 @@ import ActivityModel from "../Schemas/activities.js";
 import slugify from "slugify";
 
 class Activities {
+  async search(text){
+    try{
+      const res = await ActivityModel.find({tags:{$all:(slugify(text).toUpperCase()).split('-')}})
+      const ids_activities = res.map(activity => {return activity.activity_id})
+      const activities_select = await database.select(["activities.*", "matter.name as name_matter"])
+      .table("matter")
+      .innerJoin("activities", "activities.matter_id", "matter.id").whereIn('activities.id', ids_activities)
+      return activities_select
+    }catch(err){
+      throw err
+    }
+  }
   async findOne(filter) {
     if (!filter) throw new Error("Falta de parametros no findOne");
     const key = Object.keys(filter);
@@ -120,7 +132,9 @@ class Activities {
         });
         return activity_id;
       });
+
     } catch (err) {
+      console.error(err)
       throw err;
     }
   }
@@ -135,6 +149,7 @@ class Activities {
   async delete(id) {
     try {
       const value = await database.where({ id }).delete().table("activities");
+      await ActivityModel.find({activity_id:id}).deleteOne()
       if (value == 0)
         throw new NotExistValue("A sala a ser deletada não existe");
     } catch (err) {

@@ -6,6 +6,7 @@ import AuthUser from '../middlewares/AuthUser.js';
 const Router = express.Router()
 
 Router.get('/activity', Activities.GetAll)
+Router.get('/activity/search/:text', Activities.Search)
 Router.get('/activity/:id', Activities.GetOne)
 
 Router.patch('/activity/:id/finished', Activities.FinishedActivity)

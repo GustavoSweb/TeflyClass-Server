@@ -2,12 +2,25 @@ import PasswordToken from "../../../models/PasswordToken.js";
 import Validation from "../../../utils/Validation.js";
 import Activities from "../../../models/Activities.js";
 import { ConflictData, NotExistValue, NotValid } from "../../../utils/Error.js";
-
 class ActivitiesController {
+  async Search(req, res){
+    try{
+      const {text} = req.params
+      if(!isNaN(text)) return res.json([])
+      const body = await Activities.search(text)
+      res.json(body)
+    }catch(err){
+      console.log(err)
+      if (err.status) return res.status(err.status).json({ err: err.message });
+      res.sendStatus(500);
+    }
+  }
   async Create(req, res) {
     try {
+      
       var { title, description, delivery, shipping, bimester_id, matter_id, classrooms } =
         req.body;
+        
       new Validation({
         title,
         description,
