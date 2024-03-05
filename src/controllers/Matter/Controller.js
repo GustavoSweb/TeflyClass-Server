@@ -32,7 +32,6 @@ class MatterController {
   async GetAll(req, res) {
     try {
       let data = await Matter.findAll();
-      console.log(data)
       res.json(data);
     } catch (err) {
       res.sendStatus(500);
@@ -43,10 +42,10 @@ class MatterController {
       const { id } = req.params;
       if (isNaN(id)) throw new NotValid("Passe o id valido");
       let data = await Matter.findById(id);
-      if(!data) throw new NotExistValue('Não existe esta sala')
+      if (!data) throw new NotExistValue("Não existe esta sala");
       res.json(data);
     } catch (err) {
-      if(err.status) return res.status(err.status).json({err:err.message})
+      if (err.status) return res.status(err.status).json({ err: err.message });
       res.sendStatus(500);
     }
   }
