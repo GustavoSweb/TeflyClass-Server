@@ -21,7 +21,7 @@
     "winreg": "^1.2.5"
   },
   "name": "user-management-api",
-  "version": "1.0.0",
+  "version": "^0.3.0",
   "main": "index.js",
   "scripts": {
     "test": "nodemon --experimental-vm-modules node_modules/jest/bin/jest.js",
