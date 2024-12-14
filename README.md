@@ -14,6 +14,14 @@ Esta API foi desenvolvida para gerenciar o banco de dados da plataforma **TeflyC
 - Gerenciamento de arquivos via firebase.
 - Rotas de DELETE PUT GET PATCH em todas tabelas. 
 
+# :floppy_disk: Estrutura do Banco de Dados
+
+Abaixo está o diagrama da estrutura do banco de dados utilizado por esta API:
+
+![Tefly (2)](https://github.com/user-attachments/assets/007b450e-9bc5-4518-a2bf-09e17dae2f39)
+
+
+
 ## :bookmark_tabs: Documentação Completa
 
 A documentação completa da API, incluindo a lista de todas as rotas, métodos, parâmetros e exemplos de uso, está disponível no link abaixo:
